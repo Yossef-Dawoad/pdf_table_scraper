@@ -1,8 +1,14 @@
 # pdf table scraper
 
 a pdf scraper service that extracts tables from PDF documents and converts them to CSV format
+## Features
+- extract tabuler data for any pdf 
+- rate limit for safe usage
+- dockerized application for instatnt run and deploy
+- logger system to stout
+- tests for every endpoint 
 
-# Install
+## Install
 
 ### Docker Run
 
@@ -22,7 +28,7 @@ pip install -r requirements.prod.txt
 uvicorn app.main:app --reload
 ```
 
-# Usage
+## Usage
 
 head to `localhost:8000/` to see the docs & upload a PDF file
 
@@ -32,8 +38,9 @@ head to `localhost:8000/` to see the docs & upload a PDF file
 
 
 ## Todo
- - [] upload pdfs to firestore
- - [] scraper as background task 
- - [] maybe send an email with processed file
- - [] more rebust scarper with NER nlp
+ - [ ] upload pdfs to firestore
+ - [ ] scraper as background task 
+ - [ ] maybe send an email with processed file
+ - [ ] more rebust scarper with NER nlp
+ - [ ]  github automated test on push for CI/CD
   
