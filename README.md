@@ -29,3 +29,11 @@ head to `localhost:8000/` to see the docs & upload a PDF file
 `api end-point` :  
 ---
 `POST` ->  `api/v1/scraper` : Expect Pdf file Upload return processed data
+
+
+## Todo
+ - [] upload pdfs to firestore
+ - [] scraper as background task 
+ - [] maybe send an email with processed file
+ - [] more rebust scarper with NER nlp
+  
