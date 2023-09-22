@@ -32,6 +32,6 @@ async def receive_file(request: Request, file: UploadFile):
             detail="Invalid document type Uploaded file must be a pdf type"
         )
 
-    scraped_data = scrape_pdf(file.file)
+    scraped_data = scrape_pdf(request, file.file)
 
     return scraped_data
