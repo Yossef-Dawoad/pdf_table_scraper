@@ -1,8 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware import Middleware
 
-from .middlewares.redirect_resource import RedirectsMiddleware
-from .middlewares.timed_request import TimedRequestASGIMiddleware
+from .middlewares.redirect_recources import RedirectsMiddleware
 
 # docs:  https://www.starlette.io/middleware/
 
