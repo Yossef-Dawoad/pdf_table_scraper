@@ -8,7 +8,6 @@ packages = [{include = "pdf_scraper"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pypdf = {extras = ["crypto"], version = "^3.16.1"}
 tabula-py = "^2.8.1"
 fastapi = {extras = ["all"], version = "^0.103.1"}
 slowapi = "^0.1.8"
