@@ -17,6 +17,7 @@ and set the path in JAVA_HOME environment variable
 
 ```
 pip install -r requirements.prod.txt
+
 uvicorn app.main:app --reload
 ```
 

@@ -1,56 +1,44 @@
 from collections import Counter
-from fastapi import Request
+
+import pandas as pd
 import tabula
+from fastapi import Request
+
+from .schemas import ScrapedData
 
 
-def rename_cols_entities(req: Request, df, expected_categories: list):
-    """
-    rename the given columns by the Named Entity Recog entities
-    """
-    # getting ner mdoel from the state
-    nlp = req.app.state['ner_model']
+def clean_process_data(dfs: list[pd.DataFrame]) -> pd.DataFrame:
+    cleandf = []
+    for df in dfs:
+        df.dropna(how='all', inplace=True)
+        new_columns = ['BALLOT NAME', 'PARTY', 'OFFICE TITLE', 'FILED DATE']
+        df.columns = new_columns
 
-    for col in df.columns:
-        # Apply the nlp model to the first 10 values
-        #  in the column and extract the entity labels
-        entity_labels = (df[col][:10]
-                         .apply(
-                             lambda x: [ent.label_ for ent in nlp(x).ents
-                                        if ent.label_ in expected_categories]))
-        # Count the entity labels
-        entity_counts = Counter(entity_labels.sum())
-        try:
-            max_label, max_count = entity_counts.most_common(1)[0]
-            if max_count > 2:
-                # Rename the column with the entity label
-                df.rename(columns={col: max_label}, inplace=True)
-        except IndexError:  # we don't find any entity type for that col
-            pass
-    return df
+        # Drop the first row which contains column descriptions
+        df = df.iloc[1:]
+        df.reset_index(drop=True, inplace=True)
+
+        to_be_removed = ["OFFICE CATEGORY:",
+                         "SECRETARY OF STATE", 'BALLOT NAME']
+        removed_rows = df[df.isin(to_be_removed).any(axis=1)]
+        df = df.drop(removed_rows.index)
+        cleandf.append(df)
+
+    # Print the cleaned DataFrame
+    preprocessed = pd.concat(cleandf)
+    return preprocessed.drop_duplicates()
 
 
-def scrape_pdf(req: Request, file) -> dict:
+def scrape_pdf(req: Request, pdf_file) -> list[ScrapedData]:
     """
     scrape the pdf file and return extracted data
     """
-    header_values_to_remove = [
-        'OFFICE CATEGORY:', 'BALLOT NAME', 'OFFICE TITLE']
-    expected_categories = ['PERSON', 'GPE', 'NORP', 'DATE']
+    dfs = tabula.read_pdf(pdf_file, stream=True, pages='1-10')
+    clean_df = clean_process_data(dfs)
 
-    dfs = tabula.read_pdf(file, stream=True, pages='1-2')
-
-    processed_dfs = []
-    for df in dfs:
-        header_rows = df[df.isin(header_values_to_remove).any(axis=1)]
-        df = df.drop(header_rows.index)
-        mod_df = rename_cols_entities(req, df, expected_categories)
-        processed_dfs.append(mod_df)
+    clean_df = clean_df[['BALLOT NAME', 'PARTY', 'OFFICE TITLE']]
+    clean_df.columns = ['names', 'party', 'postions']
+    clean_df.to_dict('records')
 
     # Extract rows after header
-    return [
-        {
-            "name": "RAPHAEL G WARNOCK",
-            "position": "UNITED STATES SENATOR, WARNOCK",
-            "party": "Democrat"
-        },
-    ]
+    return clean_df

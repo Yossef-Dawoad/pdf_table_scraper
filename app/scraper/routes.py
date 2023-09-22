@@ -1,9 +1,11 @@
 import os
-from fastapi import APIRouter, Request, UploadFile, HTTPException, status
-from .scrape_service import scrape_pdf
 
+from fastapi import APIRouter, HTTPException, Request, UploadFile, status
 
 from app.limit_config import limiter
+
+from .schemas import ScrapedData
+from .scrape_service import scrape_pdf
 
 # SETTING UPLOAD DIR
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,9 +20,9 @@ router = APIRouter(
 )
 
 
-@router.post("/scraper")
+@router.post("/scraper", response_model=list[ScrapedData])
 @limiter.limit("30/minute")
-async def receive_file(request: Request, file: UploadFile):
+async def receive_file(request: Request, file: UploadFile) -> list[ScrapedData]:
     """
     Process a PDF file upload and return filtered scraped data contailn {names, party, }
     """
@@ -28,7 +30,7 @@ async def receive_file(request: Request, file: UploadFile):
     if file.content_type != "application/pdf":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid document type Uploaded file must be a pdf type"
+            detail="Invalid document type Uploaded file must be a pdf type",
         )
 
     scraped_data = scrape_pdf(request, file.file)

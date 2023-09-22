@@ -1,17 +1,16 @@
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 
+import spacy
 from fastapi import FastAPI, Request
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-import spacy
+
+from app.limit_config import limiter
+from app.logs.logconfig import init_loggers
 from app.scraper.routes import router as scraper_router
 
-from app.logs.logconfig import init_loggers
-
 from .middleware import middlewareStack
-from app.limit_config import limiter
-
 
 # api rate limiting
 # limiter = Limiter(
@@ -36,7 +35,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     docs_url="/",
     middleware=middlewareStack,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter
