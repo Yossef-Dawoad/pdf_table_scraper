@@ -1,6 +1,5 @@
 import os
 from fastapi import APIRouter, Request, UploadFile, HTTPException, status
-from fastapi.responses import StreamingResponse
 from .scrape_service import scrape_pdf
 
 

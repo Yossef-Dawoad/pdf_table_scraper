@@ -11,7 +11,8 @@ def rename_cols_entities(req: Request, df, expected_categories: list):
     nlp = req.app.state['ner_model']
 
     for col in df.columns:
-        # Apply the nlp model to the first 10 values in the column and extract the entity labels
+        # Apply the nlp model to the first 10 values
+        #  in the column and extract the entity labels
         entity_labels = (df[col][:10]
                          .apply(
                              lambda x: [ent.label_ for ent in nlp(x).ents

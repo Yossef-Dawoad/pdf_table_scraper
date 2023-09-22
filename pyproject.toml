@@ -4,12 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["Yossef-Dawoad <yossefdawoad15@gmail.com>"]
 readme = "README.md"
-packages = [{include = "pdf_scraper"}]
+packages = [{ include = "pdf_scraper" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 tabula-py = "^2.8.1"
-fastapi = {extras = ["all"], version = "^0.103.1"}
+fastapi = { extras = ["all"], version = "^0.103.1" }
 slowapi = "^0.1.8"
 uvicorn = "^0.23.2"
 python-multipart = "^0.0.6"
@@ -20,6 +20,60 @@ spacy = "^3.6.1"
 pytest = "^7.4.2"
 ruff = "^0.0.290"
 black = "^23.9.1"
+
+
+[tool.ruff]
+extend-select = [
+    'C4',
+    "F",       # pyflakes
+    "E",       # Errors
+    "W",       # warnnings
+    "RUF",     # Ruff-specific rules
+    "PERF",    #PREFlint
+    "PL",      # PYLINT
+    "UP",      # pyupgrade
+    'SIM',     #sim for code simplification
+    'TCH',     #tch for type checking
+    'F707',    # Syntax error in forward annotation
+    'I001',    # Import block is un-sorted or un-formatted
+    'I002',    # Missing required import:
+    'COM',     # FLAKE COMMA
+    'ANN',     # flake8-annotations
+    'PYI052',  #Need type annotation for
+    'DTZ',     #FLAKE datetime
+    'ASYNC',   #FLAKE ASYNC
+    'PLE1700',
+]
+# fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+show-fixes = true
+target-version = "py310"
+line-length = 88
+ignore = ['E501', 'SIM115', 'ANN101', "UP007"]
+
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+max-complexity = 10
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+  | alembic
+  | config.py
+  )/
+  '''
+
 
 [build-system]
 requires = ["poetry-core"]
