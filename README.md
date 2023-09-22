@@ -13,7 +13,8 @@ docker-composer up -d
 ### without docker
 
 you must have java installed on your system
-and set the path in JAVA_HOME environment variable
+sence tabula-py is a wrapper around the Java Implementation,  
+this guide could help if you needed [here](https://devwithus.com/install-java-windows-10/) for installing 
 
 ```
 pip install -r requirements.prod.txt
@@ -23,3 +24,7 @@ uvicorn app.main:app --reload
 # Usage
 
 head to `localhost:8000/` to see the docs & upload a PDF file
+
+`api end-point` :  
+---
+`POST` ->  `api/v1/scraper` : Expect Pdf file Upload return processed data
