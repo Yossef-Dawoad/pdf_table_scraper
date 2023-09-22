@@ -6,11 +6,11 @@ WORKDIR /code
 COPY ./requirements.prod.txt /code/requirements.txt
 
 # Update the package list and install OpenJDK 8
-RUN apt-get update && \
-    apt-get install -y openjdk-8-jdk
+COPY --from=openjdk:8-jre-slim /usr/local/openjdk-8 /usr/local/openjdk-8
 
 # set java env variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME /usr/local/openjdk-8
+RUN update-alternatives --install /usr/bin/java java /usr/local/openjdk-8/bin/java 1
 
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
