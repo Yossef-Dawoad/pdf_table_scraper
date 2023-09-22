@@ -14,6 +14,8 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN python -m spacy download en_core_web_sm
+
 
 
 COPY ./app /code/app

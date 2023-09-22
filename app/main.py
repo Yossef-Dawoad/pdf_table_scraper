@@ -1,16 +1,16 @@
 import logging
+from contextlib import asynccontextmanager
 
+import spacy
 from fastapi import FastAPI, Request
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+
+from app.limit_config import limiter
+from app.logs.logconfig import init_loggers
 from app.scraper.routes import router as scraper_router
 
-from app.logs.logconfig import init_loggers
-
 from .middleware import middlewareStack
-from app.limit_config import limiter
-
 
 # api rate limiting
 # limiter = Limiter(
@@ -23,9 +23,19 @@ from app.limit_config import limiter
 init_loggers(logger_name="app-logs")
 log = logging.getLogger("app-logs")
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the ML model
+    nlp_model = spacy.load('en_core_web_sm')
+
+    yield {'ner_model': nlp_model}
+
+
 app = FastAPI(
     docs_url="/",
     middleware=middlewareStack,
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter

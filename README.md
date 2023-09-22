@@ -18,6 +18,7 @@ this guide could help if you needed [here](https://devwithus.com/install-java-wi
 
 ```
 pip install -r requirements.prod.txt
+
 uvicorn app.main:app --reload
 ```
 
