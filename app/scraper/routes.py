@@ -32,7 +32,12 @@ async def receive_file(request: Request, file: UploadFile) -> list[ScrapedData]:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid document type Uploaded file must be a pdf type",
         )
+    try:
+        scraped_data = scrape_pdf(request, file.file)
+    except Exception as e:
+        return {"message": f"There was an error uploading the file: {e}"}
+    finally:
+        file.file.close()
 
-    scraped_data = scrape_pdf(request, file.file)
 
     return scraped_data
